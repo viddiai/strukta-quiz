@@ -30,7 +30,15 @@ export default function ResultPage() {
     // Load data from sessionStorage
     const storedData = sessionStorage.getItem('exitDiagnosisResult');
     if (storedData) {
-      setData(JSON.parse(storedData));
+      try {
+        const parsedData = JSON.parse(storedData);
+        console.log('Loaded data from sessionStorage:', parsedData);
+        setData(parsedData);
+      } catch (error) {
+        console.error('Error parsing sessionStorage data:', error);
+        // Redirect to quiz if data is corrupted
+        router.push('/quiz');
+      }
     } else {
       // Redirect to quiz if no data
       router.push('/quiz');
@@ -226,7 +234,10 @@ export default function ResultPage() {
 
           <div className="space-y-6">
             {sortedSections.map((section) => {
-              if (!section.content) return null;
+              // Skip sections without content
+              if (!section.content || !section.content.text || !section.content.nextSteps) {
+                return null;
+              }
 
               const isExpanded = expandedSections.has(`detail-${section.code}`);
 
@@ -242,7 +253,7 @@ export default function ResultPage() {
                       </span>
                       <div className="text-left">
                         <h3 className="font-bold text-gray-900 text-lg">{section.title || section.label}</h3>
-                        <p className="text-sm text-gray-500">Nivå: {section.content.range} poäng</p>
+                        <p className="text-sm text-gray-500">Nivå: {section.content?.range || 'N/A'} poäng</p>
                       </div>
                     </div>
                     <svg

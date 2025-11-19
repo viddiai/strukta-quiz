@@ -56,7 +56,7 @@ Analysera och ge strukturerad feedback enligt JSON-formatet.`;
 
     const response = await client.messages.create({
       model: 'claude-sonnet-4-5-20250929',
-      max_tokens: 2000,
+      max_tokens: 4000,
       system: systemPrompt,
       messages: [{ role: 'user', content: userContent }],
     });

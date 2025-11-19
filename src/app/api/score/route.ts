@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     const totalScore = computeTotalScore(sectionScores);
     console.log('Total score:', totalScore);
 
-    // 2. Generera AI-analys
+    // 2. Generera AI-analys med timeout protection
     console.log('\n--- STEP 3: Generating AI analysis ---');
     console.log('Calling generateExitAnalysis with payload:', JSON.stringify({
       totalScore,
@@ -38,13 +38,46 @@ export async function POST(request: Request) {
       hasOpenAnswers: !!openAnswers,
     }, null, 2));
 
-    const analysis = await generateExitAnalysis({
-      totalScore,
-      sections: sectionScores,
-      openAnswers,
+    // Create a timeout promise that rejects after 8 seconds
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('AI analysis timeout')), 8000);
     });
 
-    console.log('AI analysis received:', JSON.stringify(analysis, null, 2));
+    // Race between AI analysis and timeout
+    let analysis;
+    try {
+      analysis = await Promise.race([
+        generateExitAnalysis({
+          totalScore,
+          sections: sectionScores,
+          openAnswers,
+        }),
+        timeoutPromise,
+      ]);
+      console.log('AI analysis received:', JSON.stringify(analysis, null, 2));
+    } catch (error) {
+      console.warn('AI analysis timed out or failed, using fallback:', error);
+      // Use fallback analysis
+      analysis = {
+        overall: 'Din exit-beredskap har analyserats. Se detaljerad information nedan.',
+        priorities: [
+          'Fokusera på områden med lägst poäng',
+          'Säkerställ att alla dokument är i ordning',
+          'Kontakta rådgivare för personlig genomgång',
+        ],
+        sections: sectionScores
+          .filter((s) => s.score < 70)
+          .map((s) => ({
+            code: s.code,
+            label: s.label,
+            summary: `Detta område behöver förbättras (${s.score}/100).`,
+            recommendations: [
+              'Gå igenom frågorna i detta avsnitt igen',
+              'Kontakta en rådgivare för specifik hjälp',
+            ],
+          })),
+      };
+    }
 
     // 3. Lägg till detaljerad sektionstext för varje sektion
     console.log('\n--- STEP 4: Adding detailed section content ---');

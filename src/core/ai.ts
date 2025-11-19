@@ -1,9 +1,9 @@
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import { SectionScore } from './types';
 
 function getClient() {
-  return new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY,
+  return new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
   });
 }
 
@@ -47,42 +47,35 @@ Analysera och ge strukturerad feedback enligt JSON-formatet.`;
 
   try {
     console.log('\n=== AI ANALYSIS START ===');
-    console.log('Anthropic API Request:');
-    console.log('Model: claude-sonnet-4-5-20250929');
+    console.log('OpenAI API Request:');
+    console.log('Model: gpt-4o');
     console.log('Max tokens: 4000');
     console.log('System prompt length:', systemPrompt.length);
     console.log('User content length:', userContent.length);
     console.log('User content:', userContent);
 
-    const response = await client.messages.create({
-      model: 'claude-sonnet-4-5-20250929',
+    const response = await client.chat.completions.create({
+      model: 'gpt-4o',
       max_tokens: 4000,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userContent }],
+      response_format: { type: 'json_object' },
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userContent },
+      ],
     });
 
-    console.log('\nAnthropic API Response received:');
+    console.log('\nOpenAI API Response received:');
     console.log('Response ID:', response.id);
     console.log('Response model:', response.model);
-    console.log('Stop reason:', response.stop_reason);
+    console.log('Finish reason:', response.choices[0].finish_reason);
     console.log('Usage:', JSON.stringify(response.usage, null, 2));
-    console.log('Content blocks:', response.content.length);
 
-    let text = response.content[0].type === 'text' ? response.content[0].text : '';
+    const text = response.choices[0].message.content || '';
     console.log('\nRaw response text (first 500 chars):', text.substring(0, 500));
     console.log('Full response text length:', text.length);
 
-    // Remove markdown code blocks if present
-    const originalText = text;
-    text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-
-    if (originalText !== text) {
-      console.log('Markdown code blocks removed');
-      console.log('Cleaned text (first 500 chars):', text.substring(0, 500));
-    }
-
     if (!text) {
-      console.error('ERROR: Empty text after cleanup');
+      console.error('ERROR: Empty text from API');
       throw new Error('Tom respons från AI');
     }
 

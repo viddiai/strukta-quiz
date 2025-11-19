@@ -17,6 +17,23 @@ interface PDFData {
   analysis: AnalysisResult;
 }
 
+// Exit Coach tips for each section
+const getExitCoachTip = (sectionCode: string): string => {
+  const tips: Record<string, string> = {
+    ST: 'Säljer du av rätt skäl vid rätt tillfälle?',
+    BA: 'Hur ser en köpare på ditt case?',
+    VP: 'Vad är bolaget värt och på vilka villkor?',
+    KS: 'Vem ska du sälja till?',
+    PD: 'Klarar du en riktig försäljningsprocess?',
+    AG: 'Hur mycket ansvar tar du efter tillträdet?',
+    SK: 'Vad får du faktiskt kvar?',
+    LP: 'Vad händer med människorna?',
+    VK: 'Vad händer med ditt "arv"?',
+    DL: 'Vad händer med dig?',
+  };
+  return tips[sectionCode] || '';
+};
+
 export function generatePDF(data: PDFData) {
   const { totalScore, sectionScores, analysis } = data;
   const doc = new jsPDF();
@@ -246,6 +263,25 @@ export function generatePDF(data: PDFData) {
       yPosition = addWrappedText(stepText, margin, yPosition, contentWidth, 6);
       yPosition += 3;
     });
+
+    yPosition += 8;
+
+    // "Tips från din Exit Coach" section
+    checkPageBreak(15);
+    const coachTip = getExitCoachTip(section.code);
+    if (coachTip) {
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...primaryColor);
+      doc.text('Tips från din Exit Coach:', margin, yPosition);
+      yPosition += 6;
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'italic');
+      doc.setTextColor(...textColor);
+      yPosition = addWrappedText(coachTip, margin, yPosition, contentWidth, 6);
+      yPosition += 5;
+    }
 
     yPosition += 10;
   });

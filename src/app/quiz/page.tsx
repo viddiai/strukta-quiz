@@ -50,6 +50,7 @@ export default function QuizPage() {
     setIsSubmitting(true);
 
     try {
+      console.log('Submitting answers to /api/score...');
       const response = await fetch('/api/score', {
         method: 'POST',
         headers: {
@@ -58,19 +59,24 @@ export default function QuizPage() {
         body: JSON.stringify({ answers }),
       });
 
+      console.log('API response status:', response.status);
       const result = await response.json();
+      console.log('API response data:', result);
 
       if (result.success) {
         // Store result in sessionStorage and navigate to result page
+        console.log('Storing result in sessionStorage...');
         sessionStorage.setItem('exitDiagnosisResult', JSON.stringify(result.data));
+        console.log('Navigating to /result...');
         router.push('/result');
       } else {
-        alert('Ett fel uppstod vid beräkningen. Försök igen.');
+        console.error('API returned success: false', result);
+        alert(`Ett fel uppstod vid beräkningen: ${result.error || 'Okänt fel'}. Försök igen.`);
         setIsSubmitting(false);
       }
     } catch (error) {
       console.error('Submit error:', error);
-      alert('Ett fel uppstod. Kontrollera din internetanslutning.');
+      alert(`Ett fel uppstod: ${error instanceof Error ? error.message : 'Okänt fel'}. Kontrollera din internetanslutning.`);
       setIsSubmitting(false);
     }
   };

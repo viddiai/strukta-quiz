@@ -49,7 +49,7 @@ Analysera och ge strukturerad feedback enligt JSON-formatet.`;
     console.log('\n=== AI ANALYSIS START ===');
     console.log('Anthropic API Request:');
     console.log('Model: claude-sonnet-4-5-20250929');
-    console.log('Max tokens: 2000');
+    console.log('Max tokens: 4000');
     console.log('System prompt length:', systemPrompt.length);
     console.log('User content length:', userContent.length);
     console.log('User content:', userContent);

@@ -64,17 +64,22 @@ När affären är klar förändras din vardag i grunden. Ska du stanna kvar en p
 
 ---
 
-## Mappning per kategori
+## Sammanfattning
 
-| Kod | Kategori | Tips från din Exit Coach |
-|-----|----------|--------------------------|
-| ST  | Strategi & Tajming | Säljer du av rätt skäl vid rätt tillfälle? |
-| BA  | Bolagets Attraktivitet & Siffror | Hur ser en köpare på ditt case? |
-| VP  | Värdering, Pris & Affärsstruktur | Vad är bolaget värt och på vilka villkor? |
-| KS  | Köparlandskap & Köparstrategi | Vem ska du sälja till? |
-| PD  | Process & DD-förberedelse | Klarar du en riktig försäljningsprocess? |
-| AG  | Avtal, Garantier & Risk | Hur mycket ansvar tar du efter tillträdet? |
-| SK  | Skatt & Privatekonomi | Vad får du faktiskt kvar? |
-| LP  | Ledning, Nyckelpersoner & Personal | Vad händer med människorna? |
-| VK  | Varumärke, Kultur & Kundrelationer | Vad händer med ditt "arv"? |
-| DL  | Min Roll & Livet Efter Affären | Vad händer med dig? |
+Detta dokument innehåller fördjupade förklaringar för varje kategori som används i:
+- PDF-rapporten under "Tips från din Exit Coach"
+- Som vägledning för att förstå varje områdes betydelse
+
+Varje kategori har nu en omfattande text (3-5 meningar) som förklarar:
+- Varför området är viktigt
+- Vad som undersöks
+- Vilka frågor som ställs
+- Hur det påverkar en exit-process
+
+## Teknisk implementation
+
+Texterna hämtas från funktionen `getExitCoachTip()` i `src/utils/generatePDF.ts` och visas:
+- I blå färg (`primaryColor`)
+- I kursiv stil
+- Efter "Nästa steg"-sektionen
+- För varje sektion i PDF-rapporten

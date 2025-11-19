@@ -7,3 +7,12 @@
 
 [build.environment]
   NODE_VERSION = "18"
+
+[functions]
+  # Increase timeout for AI analysis
+  node_bundler = "esbuild"
+
+[[functions]]
+  # Specific timeout for API routes
+  path = ".netlify/functions-internal/*"
+  node_bundler = "esbuild"

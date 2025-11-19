@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { computeSectionScores, computeTotalScore } from '@/core/scoring';
 import { generateExitAnalysis } from '@/core/ai';
+import { getSectionContentByScore, getSectionTitle } from '@/core/sectionContent';
 import type { Answers } from '@/core/types';
 
 export async function POST(request: Request) {
@@ -45,13 +46,33 @@ export async function POST(request: Request) {
 
     console.log('AI analysis received:', JSON.stringify(analysis, null, 2));
 
-    // 3. Returnera komplett resultat
-    console.log('\n--- STEP 4: Returning response ---');
+    // 3. Lägg till detaljerad sektionstext för varje sektion
+    console.log('\n--- STEP 4: Adding detailed section content ---');
+    const sectionsWithContent = sectionScores.map((section) => {
+      const content = getSectionContentByScore(section.code, section.score);
+      const title = getSectionTitle(section.code);
+
+      return {
+        ...section,
+        title,
+        content: content
+          ? {
+              text: content.text,
+              nextSteps: content.nextSteps,
+              range: content.range,
+            }
+          : null,
+      };
+    });
+    console.log('Section content added for all sections');
+
+    // 4. Returnera komplett resultat
+    console.log('\n--- STEP 5: Returning response ---');
     const response = {
       success: true,
       data: {
         totalScore,
-        sectionScores,
+        sectionScores: sectionsWithContent,
         analysis,
       },
     };

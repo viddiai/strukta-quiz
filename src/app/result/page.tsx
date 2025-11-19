@@ -6,9 +6,18 @@ import { generatePDF } from '@/utils/generatePDF';
 import type { SectionScore } from '@/core/types';
 import type { AnalysisResult } from '@/core/ai';
 
+interface SectionWithContent extends SectionScore {
+  title?: string;
+  content?: {
+    text: string;
+    nextSteps: string[];
+    range: string;
+  } | null;
+}
+
 interface ResultData {
   totalScore: number;
-  sectionScores: SectionScore[];
+  sectionScores: SectionWithContent[];
   analysis: AnalysisResult;
 }
 
@@ -206,6 +215,91 @@ export default function ResultPage() {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Detailed Section Reports */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Detaljerad rapport per område</h2>
+          <p className="text-gray-600 mb-6">
+            Nedan får du en djupare analys av varje område baserat på din nuvarande nivå.
+          </p>
+
+          <div className="space-y-6">
+            {sortedSections.map((section) => {
+              if (!section.content) return null;
+
+              const isExpanded = expandedSections.has(`detail-${section.code}`);
+
+              return (
+                <div key={`detail-${section.code}`} className="border-2 border-gray-200 rounded-lg overflow-hidden">
+                  <button
+                    onClick={() => toggleSection(`detail-${section.code}`)}
+                    className="w-full flex justify-between items-center p-5 hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className={`px-4 py-2 rounded-lg text-lg font-bold ${getScoreColor(section.score)}`}>
+                        {Math.round(section.score)}
+                      </span>
+                      <div className="text-left">
+                        <h3 className="font-bold text-gray-900 text-lg">{section.title || section.label}</h3>
+                        <p className="text-sm text-gray-500">Nivå: {section.content.range} poäng</p>
+                      </div>
+                    </div>
+                    <svg
+                      className={`w-6 h-6 text-gray-500 transition-transform flex-shrink-0 ${
+                        isExpanded ? 'rotate-180' : ''
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {isExpanded && (
+                    <div className="px-5 pb-5 bg-gray-50 border-t-2 border-gray-100">
+                      <div className="pt-5">
+                        <h4 className="font-semibold text-gray-900 mb-3 text-base">Din nuvarande situation</h4>
+                        <p className="text-gray-700 leading-relaxed mb-6">{section.content.text}</p>
+
+                        <h4 className="font-semibold text-gray-900 mb-3 text-base">Nästa steg</h4>
+                        <ul className="space-y-3">
+                          {section.content.nextSteps.map((step, index) => (
+                            <li key={index} className="flex gap-3">
+                              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold">
+                                {index + 1}
+                              </span>
+                              <span className="text-gray-700 pt-0.5">{step}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Final CTA block */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg p-8 mb-8 text-white">
+          <h2 className="text-2xl font-bold mb-3">Vad gör du med den här insikten nu?</h2>
+          <p className="mb-4 text-blue-100 leading-relaxed">
+            Diagnosen är inte till för att säga &ldquo;sälj&rdquo; eller &ldquo;sälj inte&rdquo;, utan för att visa var du behöver
+            bli skarpare innan du ger dig in i en av ditt livs viktigaste affärer.
+          </p>
+          <div className="space-y-2 mb-6 text-blue-50">
+            <p>✓ <strong>Din totala score</strong> – hur nära är du ett realistiskt exitläge?</p>
+            <p>✓ <strong>Dina 3 svagaste områden</strong> – det är där värdet riskerar att rinna ut</p>
+          </div>
+          <p className="text-blue-100 mb-2">Vill du gå vidare kan du:</p>
+          <ul className="list-disc list-inside space-y-1 text-blue-50 mb-6">
+            <li>Göra en konkret 12–24 månaders förberedelseplan utifrån svagaste områdena</li>
+            <li>Ta in rätt typ av rådgivare med ett tydligt uppdrag</li>
+            <li>Använda insikterna här som underlag i styrelse, ägarmöten och diskussioner med familj</li>
+          </ul>
         </div>
 
         {/* CTA buttons */}

@@ -2,9 +2,18 @@ import jsPDF from 'jspdf';
 import type { SectionScore } from '@/core/types';
 import type { AnalysisResult } from '@/core/ai';
 
+interface SectionWithContent extends SectionScore {
+  title?: string;
+  content?: {
+    text: string;
+    nextSteps: string[];
+    range: string;
+  } | null;
+}
+
 interface PDFData {
   totalScore: number;
-  sectionScores: SectionScore[];
+  sectionScores: SectionWithContent[];
   analysis: AnalysisResult;
 }
 
@@ -180,50 +189,66 @@ export function generatePDF(data: PDFData) {
 
   yPosition += 10;
 
-  // Section recommendations
-  const sectionsNeedingWork = sortedSections.filter((s) => s.score < 70);
-  if (sectionsNeedingWork.length > 0) {
-    checkPageBreak(20);
-    doc.setFontSize(14);
+  // Detailed Section Reports - Show ALL sections with their detailed content
+  checkPageBreak(20);
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Detaljerad rapport per område', margin, yPosition);
+  yPosition += 10;
+
+  sortedSections.forEach((section) => {
+    // Skip sections without content
+    if (!section.content || !section.content.text || !section.content.nextSteps) {
+      return;
+    }
+
+    checkPageBreak(40);
+
+    // Section title with score and range
+    doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
-    doc.text('Områden att förbättra', margin, yPosition);
-    yPosition += 10;
+    doc.setTextColor(...textColor);
+    const sectionTitle = section.title || section.label;
+    doc.text(sectionTitle, margin, yPosition);
+    yPosition += 7;
 
-    sectionsNeedingWork.forEach((section) => {
-      const sectionAnalysis = analysis.sections.find((s) => s.code === section.code);
-      if (!sectionAnalysis) return;
+    // Score and range info
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Poäng: ${Math.round(section.score)}/100 | Nivå: ${section.content.range}`, margin, yPosition);
+    yPosition += 8;
 
-      checkPageBreak(30);
+    // "Din nuvarande situation" section
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...textColor);
+    doc.text('Din nuvarande situation', margin, yPosition);
+    yPosition += 6;
 
-      // Section name with score
-      doc.setFontSize(12);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(...textColor);
-      doc.text(`${section.label} (${Math.round(section.score)}/100)`, margin, yPosition);
-      yPosition += 7;
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    yPosition = addWrappedText(section.content.text, margin, yPosition, contentWidth, 6);
+    yPosition += 8;
 
-      // Summary
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal');
-      yPosition = addWrappedText(sectionAnalysis.summary, margin, yPosition, contentWidth, 6);
-      yPosition += 5;
+    // "Nästa steg" section
+    checkPageBreak(20);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Nästa steg', margin, yPosition);
+    yPosition += 6;
 
-      // Recommendations
-      doc.setFont('helvetica', 'bold');
-      doc.text('Rekommendationer:', margin, yPosition);
-      yPosition += 6;
-
-      doc.setFont('helvetica', 'normal');
-      sectionAnalysis.recommendations.forEach((rec) => {
-        checkPageBreak(15);
-        const recText = `• ${rec}`;
-        yPosition = addWrappedText(recText, margin + 3, yPosition, contentWidth - 3, 6);
-        yPosition += 2;
-      });
-
-      yPosition += 8;
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    section.content.nextSteps.forEach((step, index) => {
+      checkPageBreak(15);
+      const stepText = `${index + 1}. ${step}`;
+      yPosition = addWrappedText(stepText, margin, yPosition, contentWidth, 6);
+      yPosition += 3;
     });
-  }
+
+    yPosition += 10;
+  });
 
   // Footer on last page
   const pageCount = doc.getNumberOfPages();

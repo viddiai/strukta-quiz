@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Result Page</title>
+</head>
+<body>
+    <h1>Test Result Page Navigation</h1>
+    <p>This will simulate completing the quiz and navigating to the result page.</p>
+
+    <button onclick="testResultPage()">Test Result Page</button>
+
+    <script>
+        function testResultPage() {
+            // Sample data that would normally come from the API
+            const testData = {
+                "totalScore": 75,
+                "sectionScores": [
+                    {
+                        "code": "ST",
+                        "label": "Strategi & Tajming",
+                        "score": 75,
+                        "averageRaw": 4,
+                        "questionCount": 4,
+                        "title": "Strategi & tajming – säljer du av rätt skäl vid rätt tillfälle?",
+                        "content": {
+                            "text": "Du har hyfsad koll på varför du vill sälja, men inte hela logiken paketerad.",
+                            "nextSteps": [
+                                "Gör en enkel jämförelse: 'sälja nu vs sälja om 3–4 år'",
+                                "Sätt ord på din primära drivkraft",
+                                "Definiera ett tidsfönster"
+                            ],
+                            "range": "60-79"
+                        }
+                    }
+                ],
+                "analysis": {
+                    "overall": "Med en total score på 75/100 befinner sig bolaget i ett balanserat läge.",
+                    "priorities": [
+                        "Genomför en extern värdering",
+                        "Kartlägg potentiella köpare",
+                        "Stärk ledningsteamet"
+                    ],
+                    "sections": []
+                }
+            };
+
+            // Store in sessionStorage
+            sessionStorage.setItem('exitDiagnosisResult', JSON.stringify(testData));
+
+            // Navigate to result page
+            window.location.href = '/result';
+        }
+
+        // Clear sessionStorage on page load
+        sessionStorage.removeItem('exitDiagnosisResult');
+        console.log('SessionStorage cleared. Click button to test result page.');
+    </script>
+</body>
+</html>

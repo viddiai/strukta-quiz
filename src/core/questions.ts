@@ -1,7 +1,7 @@
 import { Question } from './types';
 
 export const QUESTIONS: Question[] = [
-  // ST – Strategi & tajming (4 frågor)
+  // ST – Strategi & tajming (2 frågor)
   {
     id: 'st_001',
     section: 'ST',
@@ -18,58 +18,18 @@ export const QUESTIONS: Question[] = [
     type: 'likert',
     weight: 1,
   },
-  {
-    id: 'st_003',
-    section: 'ST',
-    sectionLabel: 'Strategi & Tajming',
-    text: 'Jag har en plan B om marknaden eller bolagets siffror försämras innan eller under en försäljningsprocess.',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'st_004',
-    section: 'ST',
-    sectionLabel: 'Strategi & Tajming',
-    text: 'Jag har realistiska förväntningar på värdeutvecklingen om jag inte säljer nu.',
-    type: 'likert',
-    weight: 1,
-  },
 
-  // BA – Bolagets attraktivitet & siffror (4 frågor)
+  // BA – Bolagets attraktivitet & siffror (1 fråga)
   {
     id: 'ba_001',
-    section: 'BA',
-    sectionLabel: 'Bolagets Attraktivitet & Siffror',
-    text: 'Bolaget visar stabil eller växande omsättning och lönsamhet de senaste 3 åren.',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'ba_002',
     section: 'BA',
     sectionLabel: 'Bolagets Attraktivitet & Siffror',
     text: 'Vi har inte extrem beroenderisk till enstaka kunder, leverantörer eller nyckelpersoner.',
     type: 'likert',
     weight: 1,
   },
-  {
-    id: 'ba_003',
-    section: 'BA',
-    sectionLabel: 'Bolagets Attraktivitet & Siffror',
-    text: 'Våra nyckeltal (t.ex. bruttomarginal, EBITDA, kassaflöde) är väl dokumenterade och lätta att förklara.',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'ba_004',
-    section: 'BA',
-    sectionLabel: 'Bolagets Attraktivitet & Siffror',
-    text: 'Bolaget har en tydlig tillväxt- eller förbättringsplan som en köpare kan "ärva".',
-    type: 'likert',
-    weight: 1,
-  },
 
-  // VP – Värdering, pris & affärsstruktur (4 frågor)
+  // VP – Värdering, pris & affärsstruktur (2 frågor)
   {
     id: 'vp_001',
     section: 'VP',
@@ -82,28 +42,12 @@ export const QUESTIONS: Question[] = [
     id: 'vp_002',
     section: 'VP',
     sectionLabel: 'Värdering, Pris & Affärsstruktur',
-    text: 'Jag har tänkt igenom hur stor del jag vill ha kontant vid tillträde jämfört med earn-out / tilläggsköpeskilling.',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'vp_003',
-    section: 'VP',
-    sectionLabel: 'Värdering, Pris & Affärsstruktur',
-    text: 'Jag vet ungefär hur stor andel av bolaget jag kan tänka mig att behålla (eller om jag vill göra en ren exit).',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'vp_004',
-    section: 'VP',
-    sectionLabel: 'Värdering, Pris & Affärsstruktur',
     text: 'Jag har definierat en tydlig lägstanivå där jag hellre avstår affären än accepterar för dåliga villkor.',
     type: 'likert',
     weight: 1,
   },
 
-  // KS – Köparlandskap & köparstrategi (4 frågor)
+  // KS – Köparlandskap & köparstrategi (1 fråga)
   {
     id: 'ks_001',
     section: 'KS',
@@ -112,32 +56,8 @@ export const QUESTIONS: Question[] = [
     type: 'likert',
     weight: 1,
   },
-  {
-    id: 'ks_002',
-    section: 'KS',
-    sectionLabel: 'Köparlandskap & Köparstrategi',
-    text: 'Jag vet ungefär vilka konkreta aktörer som skulle kunna vara potentiella köpare.',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'ks_003',
-    section: 'KS',
-    sectionLabel: 'Köparlandskap & Köparstrategi',
-    text: 'Jag har tänkt igenom för- och nackdelar med olika köparprofiler, inte bara priset.',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'ks_004',
-    section: 'KS',
-    sectionLabel: 'Köparlandskap & Köparstrategi',
-    text: 'Jag har en första strategi för om jag vill gå brett (flera köpare) eller smalt (några få) i en process.',
-    type: 'likert',
-    weight: 1,
-  },
 
-  // PD – Process & DD-förberedelse (4 frågor)
+  // PD – Process & DD-förberedelse (2 frågor)
   {
     id: 'pd_001',
     section: 'PD',
@@ -150,28 +70,12 @@ export const QUESTIONS: Question[] = [
     id: 'pd_002',
     section: 'PD',
     sectionLabel: 'Process & DD-förberedelse',
-    text: 'Jag vet vilka nyckelpersoner internt som skulle ingå i en "deal task force" och vad de skulle göra.',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'pd_003',
-    section: 'PD',
-    sectionLabel: 'Process & DD-förberedelse',
     text: 'Vi har våra viktigaste avtal, policys och nyckeldokument så pass organiserade att de relativt snabbt kan läggas i ett data room.',
     type: 'likert',
     weight: 1,
   },
-  {
-    id: 'pd_004',
-    section: 'PD',
-    sectionLabel: 'Process & DD-förberedelse',
-    text: 'Jag har tänkt igenom hur vi ska skydda konfidentialitet och minimera störningar i den dagliga verksamheten under en process.',
-    type: 'likert',
-    weight: 1,
-  },
 
-  // AG – Avtal, garantier & risk (4 frågor)
+  // AG – Avtal, garantier & risk (1 fråga)
   {
     id: 'ag_001',
     section: 'AG',
@@ -180,32 +84,8 @@ export const QUESTIONS: Question[] = [
     type: 'likert',
     weight: 1,
   },
-  {
-    id: 'ag_002',
-    section: 'AG',
-    sectionLabel: 'Avtal, Garantier & Risk',
-    text: 'Jag har en uppfattning om vilka riskområden i bolaget som kan kräva särskilda lösningar i avtalet (t.ex. skatt, miljö, tvister).',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'ag_003',
-    section: 'AG',
-    sectionLabel: 'Avtal, Garantier & Risk',
-    text: 'Jag har funderat på var mina "röda linjer" går när det gäller ansvarstid och maximalt ansvar efter tillträde.',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'ag_004',
-    section: 'AG',
-    sectionLabel: 'Avtal, Garantier & Risk',
-    text: 'Jag accepterar inte reflexmässigt "standardvillkor" utan vill kunna ta ställning utifrån min egen riskaptit.',
-    type: 'likert',
-    weight: 1,
-  },
 
-  // SK – Skatt & privatekonomi (4 frågor)
+  // SK – Skatt & privatekonomi (2 frågor)
   {
     id: 'sk_001',
     section: 'SK',
@@ -218,28 +98,12 @@ export const QUESTIONS: Question[] = [
     id: 'sk_002',
     section: 'SK',
     sectionLabel: 'Skatt & Privatekonomi',
-    text: 'Jag har en uppfattning om hur mycket jag faktiskt får kvar efter skatt i olika prisscenarier.',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'sk_003',
-    section: 'SK',
-    sectionLabel: 'Skatt & Privatekonomi',
-    text: 'Jag har en bild av vilka eventuella omstruktureringar (holdingbolag, utdelningar etc.) som kan vara aktuella före en försäljning.',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'sk_004',
-    section: 'SK',
-    sectionLabel: 'Skatt & Privatekonomi',
     text: 'Jag har reflekterat över hur mycket kapital jag behöver för att känna mig ekonomiskt trygg efter affären.',
     type: 'likert',
     weight: 1,
   },
 
-  // LP – Ledning, nyckelpersoner & personal (4 frågor)
+  // LP – Ledning, nyckelpersoner & personal (2 frågor)
   {
     id: 'lp_001',
     section: 'LP',
@@ -252,28 +116,12 @@ export const QUESTIONS: Question[] = [
     id: 'lp_002',
     section: 'LP',
     sectionLabel: 'Ledning, Nyckelpersoner & Personal',
-    text: 'Jag har en tanke om hur och när jag ska informera ledning och nyckelpersoner om en eventuell försäljning.',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'lp_003',
-    section: 'LP',
-    sectionLabel: 'Ledning, Nyckelpersoner & Personal',
-    text: 'Jag har funderat på om nyckelpersoner ska ha någon form av incitament kopplat till en exit.',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'lp_004',
-    section: 'LP',
-    sectionLabel: 'Ledning, Nyckelpersoner & Personal',
     text: 'Jag har en strategi för att minimera risken att viktiga personer lämnar mitt i eller direkt efter en process.',
     type: 'likert',
     weight: 1,
   },
 
-  // VK – Varumärke, kultur & kundrelationer (4 frågor)
+  // VK – Varumärke, kultur & kundrelationer (3 frågor)
   {
     id: 'vk_001',
     section: 'VK',
@@ -294,20 +142,12 @@ export const QUESTIONS: Question[] = [
     id: 'vk_003',
     section: 'VK',
     sectionLabel: 'Varumärke, Kultur & Kundrelationer',
-    text: 'Jag har en uppfattning om vilken typ av köpare som sannolikt bäst bevarar bolagets kultur och kundrelationer.',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'vk_004',
-    section: 'VK',
-    sectionLabel: 'Varumärke, Kultur & Kundrelationer',
-    text: 'Jag har tänkt igenom hur vi skulle kommunicera en försäljning till viktiga kunder utan att skapa onödig oro.',
+    text: 'Bolaget har gjort en översyn av alla tillstånd, licenser och regulatoriska krav som gäller för verksamheten.',
     type: 'likert',
     weight: 1,
   },
 
-  // DL – Min roll & livet efter affären (4 frågor)
+  // DL – Min roll & livet efter affären (2 frågor)
   {
     id: 'dl_001',
     section: 'DL',
@@ -320,23 +160,7 @@ export const QUESTIONS: Question[] = [
     id: 'dl_002',
     section: 'DL',
     sectionLabel: 'Min Roll & Livet Efter Affären',
-    text: 'Jag har en bild av hur länge jag kan tänka mig att vara kvar i någon form av roll (VD, styrelse, rådgivare).',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'dl_003',
-    section: 'DL',
-    sectionLabel: 'Min Roll & Livet Efter Affären',
     text: 'Jag har en grov plan för vad jag vill göra med min tid när jag inte längre äger/driver bolaget på samma sätt.',
-    type: 'likert',
-    weight: 1,
-  },
-  {
-    id: 'dl_004',
-    section: 'DL',
-    sectionLabel: 'Min Roll & Livet Efter Affären',
-    text: 'Jag har reflekterat över min egen riskaptit och hur mycket kontroll jag vill släppa till en ny ägare.',
     type: 'likert',
     weight: 1,
   },

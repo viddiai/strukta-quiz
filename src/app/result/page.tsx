@@ -390,13 +390,18 @@ export default function ResultPage() {
           <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-6">Nästa steg</h2>
           <div className="flex flex-col sm:flex-row gap-4">
             <button
-              onClick={() => generatePDF(data)}
-              className="flex-1 px-6 py-4 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+              onClick={() => hasUnlockedReport && generatePDF(data)}
+              disabled={!hasUnlockedReport}
+              className={`flex-1 px-6 py-4 rounded-lg font-medium transition-all duration-200 shadow-md flex items-center justify-center gap-2 ${
+                hasUnlockedReport
+                  ? 'bg-slate-900 text-white hover:bg-slate-800 hover:shadow-lg cursor-pointer'
+                  : 'bg-slate-300 text-slate-500 cursor-not-allowed'
+              }`}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              Ladda ner PDF-rapport
+              {hasUnlockedReport ? 'Ladda ner PDF-rapport' : '🔒 Lås upp för att ladda ner PDF'}
             </button>
             <a
               href="mailto:kontakt@exitdiagnos.se?subject=Boka rådgivning - Exit-diagnos"
@@ -408,10 +413,17 @@ export default function ResultPage() {
               Boka rådgivning
             </a>
           </div>
-          <p className="text-sm text-slate-600 mt-6 text-center leading-relaxed">
-            Vill du diskutera ditt resultat? Boka ett kostnadsfritt samtal med en av våra
-            exit-rådgivare.
-          </p>
+          {!hasUnlockedReport && (
+            <p className="text-sm text-amber-700 font-medium mt-4 text-center leading-relaxed">
+              ⬆️ Fyll i formuläret ovan för att låsa upp PDF-nedladdning
+            </p>
+          )}
+          {hasUnlockedReport && (
+            <p className="text-sm text-slate-600 mt-6 text-center leading-relaxed">
+              Vill du diskutera ditt resultat? Boka ett kostnadsfritt samtal med en av våra
+              exit-rådgivare.
+            </p>
+          )}
         </div>
 
         {/* Back to start */}

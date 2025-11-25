@@ -21,10 +21,19 @@ interface ResultData {
   analysis: AnalysisResult;
 }
 
+interface UserInfo {
+  name: string;
+  email: string;
+  company: string;
+}
+
 export default function ResultPage() {
   const router = useRouter();
   const [data, setData] = useState<ResultData | null>(null);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
+  const [hasUnlockedReport, setHasUnlockedReport] = useState(false);
+  const [userInfo, setUserInfo] = useState<UserInfo>({ name: '', email: '', company: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     // Load data from sessionStorage
@@ -44,6 +53,26 @@ export default function ResultPage() {
       router.push('/quiz');
     }
   }, [router]);
+
+  const handleUnlockReport = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      console.log('User info submitted:', userInfo);
+      setHasUnlockedReport(true);
+      setIsSubmitting(false);
+
+      // Scroll to detailed report
+      setTimeout(() => {
+        const detailSection = document.getElementById('detailed-report');
+        if (detailSection) {
+          detailSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }, 500);
+  };
 
   if (!data) {
     return (
@@ -93,6 +122,11 @@ export default function ResultPage() {
     });
   };
 
+  const isFormValid = userInfo.name.trim() !== '' &&
+                      userInfo.email.trim() !== '' &&
+                      userInfo.company.trim() !== '' &&
+                      userInfo.email.includes('@');
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-4xl mx-auto">
@@ -122,7 +156,7 @@ export default function ResultPage() {
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-900">{section.label}</h3>
                   <p className="text-sm text-gray-500">
-                    {section.questionCount} frågor • Genomsnitt: {section.averageRaw.toFixed(1)}/5
+                    {section.questionCount} {section.questionCount === 1 ? 'fråga' : 'frågor'} • Genomsnitt: {section.averageRaw.toFixed(1)}/5
                   </p>
                 </div>
                 <div className={`text-2xl font-bold px-4 py-2 rounded-lg ${getScoreColor(section.score)}`}>
@@ -153,77 +187,165 @@ export default function ResultPage() {
               ))}
             </ol>
           </div>
-
         </div>
 
-        {/* Detailed Section Reports */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Detaljerad rapport per område</h2>
-          <p className="text-gray-600 mb-6">
-            Nedan får du en djupare analys av varje område baserat på din nuvarande nivå.
-          </p>
+        {/* Unlock Report Form */}
+        {!hasUnlockedReport && (
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg shadow-lg p-8 mb-8 border-2 border-blue-200">
+            <div className="text-center mb-6">
+              <div className="inline-block p-3 bg-blue-600 rounded-full mb-4">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Lås upp din detaljerade rapport</h2>
+              <p className="text-gray-700 max-w-2xl mx-auto">
+                För att få tillgång till den fullständiga analysen med konkreta nästa steg för varje område,
+                vänligen fyll i dina uppgifter nedan.
+              </p>
+            </div>
 
-          <div className="space-y-6">
-            {sortedSections.map((section) => {
-              // Skip sections without content
-              if (!section.content || !section.content.text || !section.content.nextSteps) {
-                return null;
-              }
+            <form onSubmit={handleUnlockReport} className="max-w-md mx-auto space-y-4">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  Namn *
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  required
+                  value={userInfo.name}
+                  onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Ditt för- och efternamn"
+                />
+              </div>
 
-              const isExpanded = expandedSections.has(`detail-${section.code}`);
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  E-post *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  required
+                  value={userInfo.email}
+                  onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="din.epost@foretag.se"
+                />
+              </div>
 
-              return (
-                <div key={`detail-${section.code}`} className="border-2 border-gray-200 rounded-lg overflow-hidden">
-                  <button
-                    onClick={() => toggleSection(`detail-${section.code}`)}
-                    className="w-full flex justify-between items-center p-5 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex items-center gap-4">
-                      <span className={`px-4 py-2 rounded-lg text-lg font-bold ${getScoreColor(section.score)}`}>
-                        {Math.round(section.score)}
-                      </span>
-                      <div className="text-left">
-                        <h3 className="font-bold text-gray-900 text-lg">{section.title || section.label}</h3>
-                        <p className="text-sm text-gray-500">Nivå: {section.content?.range || 'N/A'} poäng</p>
-                      </div>
-                    </div>
-                    <svg
-                      className={`w-6 h-6 text-gray-500 transition-transform flex-shrink-0 ${
-                        isExpanded ? 'rotate-180' : ''
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
+              <div>
+                <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
+                  Företag *
+                </label>
+                <input
+                  type="text"
+                  id="company"
+                  required
+                  value={userInfo.company}
+                  onChange={(e) => setUserInfo({ ...userInfo, company: e.target.value })}
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Ditt företagsnamn"
+                />
+              </div>
 
-                  {isExpanded && (
-                    <div className="px-5 pb-5 bg-gray-50 border-t-2 border-gray-100">
-                      <div className="pt-5">
-                        <h4 className="font-semibold text-gray-900 mb-3 text-base">Din nuvarande situation</h4>
-                        <p className="text-gray-700 leading-relaxed mb-6">{section.content.text}</p>
+              <button
+                type="submit"
+                disabled={!isFormValid || isSubmitting}
+                className={`w-full py-4 rounded-lg font-semibold text-lg transition-all ${
+                  !isFormValid || isSubmitting
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl'
+                }`}
+              >
+                {isSubmitting ? '🔓 Låser upp...' : '🔓 Lås upp detaljerad rapport'}
+              </button>
 
-                        <h4 className="font-semibold text-gray-900 mb-3 text-base">Nästa steg</h4>
-                        <ul className="space-y-3">
-                          {section.content.nextSteps.map((step, index) => (
-                            <li key={index} className="flex gap-3">
-                              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold">
-                                {index + 1}
-                              </span>
-                              <span className="text-gray-700 pt-0.5">{step}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+              <p className="text-xs text-gray-600 text-center mt-4">
+                Vi använder dina uppgifter endast för att skicka din rapport och relevant information om exit-rådgivning.
+                Inga uppgifter delas med tredje part.
+              </p>
+            </form>
           </div>
-        </div>
+        )}
+
+        {/* Detailed Section Reports - Only visible after unlock */}
+        {hasUnlockedReport && (
+          <div id="detailed-report" className="bg-white rounded-lg shadow-sm p-6 mb-8">
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h2 className="text-2xl font-bold text-gray-900">Detaljerad rapport per område</h2>
+            </div>
+            <p className="text-gray-600 mb-6">
+              Nedan får du en djupare analys av varje område baserat på din nuvarande nivå.
+            </p>
+
+            <div className="space-y-6">
+              {sortedSections.map((section) => {
+                // Skip sections without content
+                if (!section.content || !section.content.text || !section.content.nextSteps) {
+                  return null;
+                }
+
+                const isExpanded = expandedSections.has(`detail-${section.code}`);
+
+                return (
+                  <div key={`detail-${section.code}`} className="border-2 border-gray-200 rounded-lg overflow-hidden">
+                    <button
+                      onClick={() => toggleSection(`detail-${section.code}`)}
+                      className="w-full flex justify-between items-center p-5 hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-center gap-4">
+                        <span className={`px-4 py-2 rounded-lg text-lg font-bold ${getScoreColor(section.score)}`}>
+                          {Math.round(section.score)}
+                        </span>
+                        <div className="text-left">
+                          <h3 className="font-bold text-gray-900 text-lg">{section.title || section.label}</h3>
+                          <p className="text-sm text-gray-500">Nivå: {section.content?.range || 'N/A'} poäng</p>
+                        </div>
+                      </div>
+                      <svg
+                        className={`w-6 h-6 text-gray-500 transition-transform flex-shrink-0 ${
+                          isExpanded ? 'rotate-180' : ''
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+
+                    {isExpanded && (
+                      <div className="px-5 pb-5 bg-gray-50 border-t-2 border-gray-100">
+                        <div className="pt-5">
+                          <h4 className="font-semibold text-gray-900 mb-3 text-base">Din nuvarande situation</h4>
+                          <p className="text-gray-700 leading-relaxed mb-6">{section.content.text}</p>
+
+                          <h4 className="font-semibold text-gray-900 mb-3 text-base">Nästa steg</h4>
+                          <ul className="space-y-3">
+                            {section.content.nextSteps.map((step, index) => (
+                              <li key={index} className="flex gap-3">
+                                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold">
+                                  {index + 1}
+                                </span>
+                                <span className="text-gray-700 pt-0.5">{step}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Final CTA block */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg p-8 mb-8 text-white">

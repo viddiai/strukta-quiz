@@ -10,7 +10,7 @@ export default function Home() {
       <div className="text-center space-y-8">
         <h1 className="text-4xl font-bold">Exit-Diagnos</h1>
         <p className="text-lg text-gray-600 max-w-2xl">
-          Hur redo är ditt bolag för en exit? Svara på 40 frågor och få en personlig analys av din exit-beredskap.
+          Hur redo är ditt bolag för en exit? Svara på 18 frågor och få en personlig analys av din exit-beredskap.
         </p>
         <button
           onClick={() => router.push('/quiz')}
